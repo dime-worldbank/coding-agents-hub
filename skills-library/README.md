@@ -12,6 +12,6 @@ Use this catalog to find reusable skills by topic and language, then follow the 
 ## Curated Skill Links
 
 | Topic | Language | Skill Repo | Description | External | 
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | Coding | Stata | dylantmoore/stata-skill | General Stata best practices to make code agents better at Stata. | Yes | 
 
