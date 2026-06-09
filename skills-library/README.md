@@ -6,7 +6,7 @@ It combines:
 - Internal resources in this hub (guides, templates, trainings)
 - External skill libraries and vetted repositories
 
-Use this catalog to find reusable skills by topic and language, then follow installation guidance in [external-resources/skill-installation.md](../external-resources/skill-installation.md).
+Use this catalog to find reusable skills by topic and language, then follow the [installation guidance](skill-installation.md) to install the skill in your project..
 
 
 ## Curated Skill Links
