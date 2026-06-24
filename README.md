@@ -1,5 +1,9 @@
 # DECDI Coding Agent Hub
-A centralized repository that hosts or links to material helping teasm to get started and improve their workflows with coding agents.
+A centralized repository that hosts or links to material helping teams to get started and improve their workflows with coding agents.
+
+This resource will be populated over time as standardized coding agent best practices in our field of social science research emerge. 
+
+We depend on the community of teams experimenting with coding agents as these practices depends on your domain expertise. If you have resources, templates, or examples that have worked well for your team, please share them with [Impact Analytics](mailto:dimeanalytics@worldbank.org) or fork this repo and submit a pull request to contribute them!
 
 ## Content
 
