@@ -63,9 +63,16 @@ jobs:
       fail-fast: false
       matrix:
         skill_dir: ${{ fromJson(needs.find.outputs.skills) }}
+    # Serialize releases per skill so overlapping runs can't interleave their
+    # tag force-push and asset upload.
+    concurrency:
+      group: release-skill-${{ matrix.skill_dir }}
+      cancel-in-progress: false
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Name the skill, zip it, move the tag
         id: skill
@@ -73,6 +80,20 @@ jobs:
           dir="${{ matrix.skill_dir }}"
           name=$(basename "$dir")
           tag="${name}-latest"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+          # Bail out if the currently published tag is already at, or ahead
+          # of, this run's commit, so a stale/delayed run can't overwrite a
+          # newer release.
+          git fetch origin "refs/tags/$tag" 2>/dev/null || true
+          if existing_sha=$(git rev-parse -q --verify "refs/tags/$tag"); then
+            if git merge-base --is-ancestor "${{ github.sha }}" "$existing_sha"; then
+              echo "Skipping $name: published tag $tag ($existing_sha) is already up to date with or ahead of ${{ github.sha }}."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
 
           mkdir -p "$RUNNER_TEMP/dist"
           (cd "$(dirname "$dir")" && zip -qr "$RUNNER_TEMP/dist/$name.zip" "$name" -x '*.DS_Store')
@@ -83,11 +104,9 @@ jobs:
           git tag -f "$tag" "${{ github.sha }}"
           git push -f origin "refs/tags/$tag"
 
-          echo "name=$name" >> "$GITHUB_OUTPUT"
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-
       # Updates the release for an existing tag and replaces the attached zip.
       - name: Create or update the release
+        if: steps.skill.outputs.skip != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.skill.outputs.tag }}
