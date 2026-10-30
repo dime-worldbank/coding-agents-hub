@@ -21,6 +21,9 @@
 !.gitignore
 !.gitattributes
 
+# GitHub Actions workflows and other .github config (no credentials belong here)
+!/.github/**
+
 # Git placeholder file (to commit empty folders)
 !/**/*.gitkeep
 
