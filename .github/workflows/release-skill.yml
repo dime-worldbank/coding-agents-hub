@@ -1,0 +1,126 @@
+name: Release AI Skills
+
+# Fires when a push to main touches a skill folder (`skills-library/<category>/<skill-name>/`
+# anywhere in the repo). Each changed skill gets its OWN release, tagged
+# `<skill-name>-latest`, with a single `<skill-name>.zip` attached. The tag is
+# moved and the zip replaced on every change, so this URL never changes:
+#
+#   https://github.com/<org>/<repo>/releases/download/<skill-name>-latest/<skill-name>.zip
+#
+# Run manually from the Actions tab to (re)publish every skill.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "skills-library/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    outputs:
+      skills: ${{ steps.find.outputs.skills }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # A skill is a folder with a SKILL.md directly inside it, found anywhere under skills-library/.
+      - name: Find skills to release
+        id: find
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          all=$(find skills-library -name 'SKILL.md' -print \
+                | sed 's#/SKILL.md$##' | sort)
+
+          zeros="0000000000000000000000000000000000000000"
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "$BEFORE" ] && [ "$BEFORE" != "$zeros" ]; then
+            changed=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
+            todo=""
+            for dir in $all; do
+              if echo "$changed" | grep -q "^$dir/"; then todo="$todo$dir"$'\n'; fi
+            done
+          else
+            todo="$all"
+          fi
+
+          echo "Skills to release:"; printf '%s' "$todo"
+          json=$(printf '%s' "$todo" | python3 -c 'import sys,json; print(json.dumps([l for l in sys.stdin.read().split("\n") if l]))')
+          echo "skills=$json" >> "$GITHUB_OUTPUT"
+
+  release:
+    needs: find
+    if: needs.find.outputs.skills != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        skill_dir: ${{ fromJson(needs.find.outputs.skills) }}
+    # Serialize releases per skill so overlapping runs can't interleave their
+    # tag force-push and asset upload.
+    concurrency:
+      group: release-skill-${{ matrix.skill_dir }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Name the skill, zip it, move the tag
+        id: skill
+        run: |
+          dir="${{ matrix.skill_dir }}"
+          name=$(basename "$dir")
+          tag="${name}-latest"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+          # Bail out if the currently published tag is already at, or ahead
+          # of, this run's commit, so a stale/delayed run can't overwrite a
+          # newer release.
+          git fetch origin "refs/tags/$tag" 2>/dev/null || true
+          if existing_sha=$(git rev-parse -q --verify "refs/tags/$tag"); then
+            if git merge-base --is-ancestor "${{ github.sha }}" "$existing_sha"; then
+              echo "Skipping $name: published tag $tag ($existing_sha) is already up to date with or ahead of ${{ github.sha }}."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          mkdir -p "$RUNNER_TEMP/dist"
+          (cd "$(dirname "$dir")" && zip -qr "$RUNNER_TEMP/dist/$name.zip" "$name" -x '*.DS_Store')
+
+          # Point the stable tag at this commit.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$tag" "${{ github.sha }}"
+          git push -f origin "refs/tags/$tag"
+
+      # Updates the release for an existing tag and replaces the attached zip.
+      - name: Create or update the release
+        if: steps.skill.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.skill.outputs.tag }}
+          name: "${{ steps.skill.outputs.name }} (latest)"
+          body: |
+            Latest version of the `${{ steps.skill.outputs.name }}` skill, built from
+            `${{ matrix.skill_dir }}` at ${{ github.sha }}.
+
+            Download `${{ steps.skill.outputs.name }}.zip`, unzip it, and drop the
+            `${{ steps.skill.outputs.name }}` folder into your project's skills
+            directory (for example `.agents/skills/`).
+          files: ${{ runner.temp }}/dist/${{ steps.skill.outputs.name }}.zip
+          make_latest: false
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
