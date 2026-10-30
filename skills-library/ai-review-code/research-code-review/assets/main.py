@@ -34,32 +34,31 @@ CODE = os.path.join(PROJECT_ROOT, "Code")
 OUT_TABLES = os.path.join(PROJECT_ROOT, "Outputs", "Main", "Tables")
 OUT_FIGURES = os.path.join(PROJECT_ROOT, "Outputs", "Main", "Figures")
 
-for d in (DATA_CLEAN, OUT_TABLES, OUT_FIGURES):
-    os.makedirs(d, exist_ok=True)
-
-os.chdir(PROJECT_ROOT)
-sys.path.insert(0, CODE)
-
 # ------------------------------------------------------------------
-# 4. Reproducibility settings
+# 4. Run pipeline (guarded so importing paths above, e.g.
+#    `from main import DATA_RAW`, does not rerun steps, chdir, or reseed)
 # ------------------------------------------------------------------
-SEED = 12345
-random.seed(SEED)
-np.random.seed(SEED)
-# If using scikit-learn/torch etc., pass random_state=SEED explicitly
-# in each call as well.
+if __name__ == "__main__":
+    for d in (DATA_CLEAN, OUT_TABLES, OUT_FIGURES):
+        os.makedirs(d, exist_ok=True)
 
-# ------------------------------------------------------------------
-# 5. Run pipeline in order
-# ------------------------------------------------------------------
-STEPS = [
-    "01_cleaning/clean_data.py",       # builds Data/Cleaned  (~X min)
-    "02_analysis/analysis.py",         # builds tables 1-3    (~X min)
-    "02_analysis/figures.py",          # builds figures 1-2   (~X min)
-]
+    os.chdir(PROJECT_ROOT)
+    sys.path.insert(0, CODE)
 
-for step in STEPS:
-    print(f"--- running {step} ---")
-    runpy.run_path(os.path.join(CODE, step), run_name="__main__")
+    SEED = 12345
+    random.seed(SEED)
+    np.random.seed(SEED)
+    # If using scikit-learn/torch etc., pass random_state=SEED explicitly
+    # in each call as well.
 
-print("Done. Outputs written to Outputs/.")
+    STEPS = [
+        "01_cleaning/clean_data.py",       # builds Data/Cleaned  (~X min)
+        "02_analysis/analysis.py",         # builds tables 1-3    (~X min)
+        "02_analysis/figures.py",          # builds figures 1-2   (~X min)
+    ]
+
+    for step in STEPS:
+        print(f"--- running {step} ---")
+        runpy.run_path(os.path.join(CODE, step), run_name="__main__")
+
+    print("Done. Outputs written to Outputs/.")
