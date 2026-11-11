@@ -11,7 +11,6 @@
 | DQA-003 | Field management defences: accompaniment or shadowing by the team early in fieldwork, team leader observation forms, daily tracking sheets for completed interviews and units not found | Important | Add them |
 | DQA-004 | Back-checks: random coverage across every enumerator and team, roughly 10% of interviews with a higher share (about 20%) in the first weeks, plus missing respondents, flagged observations, and suspected cheaters | Blocker if no back-check plan | Add back-check protocol with coverage and timing |
 | DQA-005 | High-frequency checks are specified. Compare the plan with `hfc-checklist.md` and list every core check that is missing | Blocker if none exist | Add the missing checks |
-| DQA-013 | The plan names the tool and who runs it daily or weekly: iehfc (R, with a point-and-click app), ipacheck (Stata), or SurveyCTO built-in monitoring | Important | Name the tool and owner |
 | DQA-006 | Check code exists and has been tested on pilot data before fieldwork | Important | Write and test |
 | DQA-007 | Each check has frequency, owner, rule or threshold, and action when it fails | Important | Fill gaps |
 | DQA-008 | Feedback to enumerators and supervisors is given after interviews, not during, with a path for repeated problems | Important | Add protocol |
@@ -19,6 +18,7 @@
 | DQA-010 | Roles of the team and the firm match the TOR, including data delivery frequency and corrections | Important | Reconcile |
 | DQA-011 | Plan for incomplete interviews, re-interviews, corrections, and a change log | Minor | Add protocol |
 | DQA-012 | Plan is feasible for budget, connectivity, and staffing | Minor | Prioritize |
+| DQA-013 | The plan names the tool and who runs it daily or weekly: iehfc (R, with a point-and-click app), ipacheck (Stata), or SurveyCTO built-in monitoring | Important | Name the tool and owner |
 
 **Link:** iehfc for setting up checks: https://github.com/dime-worldbank/iehfc (see `links.md`).
 

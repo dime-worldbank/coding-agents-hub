@@ -1,6 +1,6 @@
 ---
 name: survey-readiness
-description: Self-check review of primary survey preparation for project teams. Covers timeline, ethics and data security, sampling, hiring a survey firm (Bank-executed or recipient-executed), pilot plan, questionnaire design, survey programming (XLSForm, ietestform, Style Guide), enumerator training and field plan, and data quality plan. Asks what the team wants reviewed, requests only the relevant files, and returns lists of mandatory, priority, and suggested changes with sources and links, a ready / not-ready verdict, and a closing note on contacting Impact Analytics. Do not open files until content confirmation is given.
+description: Self-check review of primary survey preparation before fieldwork, for project teams. Use whenever the user wants a survey, questionnaire, or data collection plan checked or is preparing to field a survey, even if they do not say "readiness". Covers timeline, ethics and data security, sampling, hiring a survey firm or writing a TOR (Bank-executed or recipient-executed), pilot plan, questionnaire design, survey programming (XLSForm, SurveyCTO, ietestform, Style Guide), enumerator training and field plan, and data quality plan (back-checks, high-frequency checks, iehfc). Asks what to review, requests only the relevant files, and returns mandatory, priority, and suggested changes with sources, a verdict per area, and a closing note on contacting Impact Analytics. Never approves a plan.
 ---
 
 # Survey Readiness
@@ -47,7 +47,7 @@ Load only the chosen modules, one at a time.
 
 ## Step 3: Content confirmation
 
-Before opening any file ask: "Please confirm these files contain no real respondent data or personal identifiers, and that I may review them." Accept only a clear yes; treat hedges as no. If a file contains respondent data, stop and say so.
+Before reading or using any file's content, ask: "Please confirm these files contain no real respondent data or personal identifiers, and that I may review them." Accept only a clear yes; treat hedges as no. In some apps an uploaded file is already visible to Claude on upload. If so, say that plainly, do not analyse, quote, or summarise it until the person confirms, and never repeat personal data in the reply. If a file contains respondent data, stop and say so.
 
 ## Step 4: Review (read-only)
 
@@ -65,7 +65,7 @@ Before opening any file ask: "Please confirm these files contain no real respond
    6. Other platforms: use the platform-neutral items only; the script reads XLSForms.
 7. **Data quality plan:** compare the plan's checks with `hfc-checklist.md` and list every missing core check, with the tool that covers it (iehfc, ipacheck, SurveyCTO).
 8. **Cross-document consistency** when two or more documents are provided: dates, sample sizes, quality coverage, responsibilities.
-9. Each finding: a short issue, where it is, the tier, and a short fix. Use `Possible:` where evidence is incomplete. Merge repeated instances. Keep IDs in your working notes only, to avoid reporting the same issue twice.
+9. Encryption at rest is reported once, in the ethics and data security area, even when the form checker also flags it (META-004). Each finding: a short issue, where it is, the tier, and a short fix. Use `Possible:` where evidence is incomplete. Merge repeated instances. Keep IDs in your working notes only, to avoid reporting the same issue twice.
 
 ### Verdict per area
 
@@ -87,4 +87,4 @@ Offer fixes only where intended behavior is clear. Write to a new copy, never th
 
 - Never read a whole workbook or long document into context: use the script for forms and extract only the relevant sections of Word or PDF files.
 - Do not reload a module already read in the conversation.
-- Do not restate guidance; cite the ID and give the fix.
+- Do not restate guidance. Keep IDs in working notes only; the report shows the issue, location, and fix.

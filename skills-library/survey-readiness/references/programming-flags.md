@@ -63,7 +63,7 @@ repeated instances and list representative rows.
 | VALID-002 | Constraint without a constraint message | Low | Add a clear message in every language. | Conditional |
 | VALID-003 | No `required` column, or no question enforced | Medium | Confirm which questions must be answered, then set `required`. | Conditional |
 | VALID-004 | `select_multiple` with "None"/"Don't know" but no exclusivity constraint | Medium | Add a constraint, e.g. `not(selected(., 'none') and count-selected(.) > 1)`. | Yes |
-| VALID-005 | Open-ended `text` used where a coded list would do, or with no length/format check | Low | Confirm whether a list or regex constraint is appropriate. | Conditional |
+| VALID-007 | Open-ended `text` used where a coded list would do, or with no length/format check | Low | Confirm whether a list or regex constraint is appropriate. | Conditional |
 | VALID-006 | Identifiers (household ID, phone, date of birth) with no format or uniqueness check | Medium | Add a regex or lookup validation. | Conditional |
 
 ## Translation
@@ -96,7 +96,7 @@ Wording, recall periods, sensitive questions, and flow are checked in `questionn
 | STATA-001 | No `label:stata` column in `survey` or `choices` | Medium | Add the column. The team supplies the labels. | Conditional |
 | STATA-002 | Stata labels longer than 80 characters (Stata truncates) or non-ASCII | Low | Shorten. | Conditional |
 | CODE-001 | Don't know, Refused, or Other coded differently across choice lists | Low | Adopt one scheme across the instrument. | Conditional |
-| META-004 | No encryption key (`public_key`) in settings, meaning encryption at rest is not enabled (SurveyCTO) | Medium; Blocker in the survey-readiness verdict when personal data are collected | Enable at form creation. It cannot be added to an existing form. | No |
+| META-004 | No encryption key (`public_key`) in settings, meaning encryption at rest is not enabled (SurveyCTO) | Medium; Blocker in the survey-readiness verdict when personal data are collected | Enable at form creation. It cannot be added to an existing form. Report once, in the ethics and data security area (ETH-014), and do not repeat it under programming. | No |
 | ELEC-001 | Consent is not first, or the form continues when consent is refused | Critical | Gate all later groups on consent, or end the form. | Conditional |
 | ELEC-002 | Groups used sparingly: one group per module at the top level only, shared `relevant` conditions on groups | Low | Restructure. | Yes |
 | ELEC-003 | Repeat groups over previous choices and dynamic choice lists are built with `choice_filter` or `repeat_count` tied to the roster | Medium | Fix the repeat source. | Conditional |

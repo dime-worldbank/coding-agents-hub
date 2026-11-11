@@ -27,7 +27,7 @@
 | ID | What to check | Severity | Fix |
 |---|---|---|---|
 | ETH-013 | Consent comes first in the instrument and the interview ends if the respondent refuses | Blocker | Add consent gate |
-| ETH-014 | Encryption at rest enabled before collection. In SurveyCTO use its form encryption setup (public key in the form); it must be set when the form is created, and a lost private key cannot be recovered. Test before collecting | Blocker | Enable at form creation; store the key safely |
+| ETH-014 | Encryption at rest enabled before collection. In SurveyCTO use its form encryption setup (public key in the form); it must be set when the form is created, and a lost private key cannot be recovered. Test before collecting. The programming script also flags this as META-004; report it once, here | Blocker | Enable at form creation; store the key safely |
 | ETH-015 | Encryption in transit confirmed. In SurveyCTO use its encryption setup; transit encryption is built in on SurveyCTO servers | Important | Confirm with the provider |
 | ETH-016 | Personal data fields are not marked publishable | Important | Review the publishable column |
 | ETH-017 | Everyone handling personal identifiers has current human subjects certification, is listed on the approval, and has signed a non-disclosure agreement | Important | Complete certification and agreements |

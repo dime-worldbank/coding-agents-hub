@@ -23,7 +23,7 @@
 | PROC-009 | Data deliverables and documentation (raw data regularly, IDs and linkage, codes, file and variable descriptions) | Important | Add |
 | PROC-010 | Payment tied to approved deliverables; remedies for integrity failures with thresholds | Important | Add |
 | PROC-011 | Selection criteria weights sum to 100 and match the qualifications section | Important | Fix weights |
-| PROC-012 | TOR requires devices that meet SurveyCTO's current requirements (see FIELD-013), with chargers, data plans, set-up, and a replacement plan | Important | Add device specification |
+| PROC-012 | TOR requires devices that meet SurveyCTO's current requirements (see TRAIN-013), with chargers, data plans, set-up, and a replacement plan | Important | Add device specification |
 | PROC-013 | TOR matches the sampling protocol, timeline, pilot plan, and DQA plan | Important | Reconcile |
 | PROC-014 | Quality coverage figures do not conflict inside the TOR | Minor | Make consistent |
 | PROC-015 | Confidentiality, ownership, and re-use text; data security standards; encryption expectations stated | Blocker | Add |

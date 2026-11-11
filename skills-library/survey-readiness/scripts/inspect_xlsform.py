@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Mechanical checks for XLSForm instruments (ODK / KoboToolbox / SurveyCTO).
 
-Usage: python inspect_xlsform.py form.xlsx [--json]
+Usage: python inspect_xlsform.py form.xlsx [--json] [--full]
 
 Static analysis only. Reads the .xlsx, never executes it. Prints one finding per
 line: ID | severity | sheet:row | name | evidence. Flag IDs match
-references/review-flags.md. Results are candidates for the reviewer to confirm
+references/programming-flags.md. Results are candidates for the reviewer to confirm
 in context; they are not final findings.
 """
 import re

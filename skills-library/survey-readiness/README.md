@@ -39,12 +39,12 @@ Treat this as a selected-areas review.
 
 In the Claude app, upload the zip under Customize, then Skills, and turn it on. Code execution and file creation must be enabled. Check Anthropic's current documentation, as the steps change.
 
-Before starting, move any respondent data or personal identifiers out of the folder. The agent must get your explicit confirmation before opening any file.
+Before starting, move any respondent data or personal identifiers out of the folder. The agent must get your explicit confirmation before it reviews any file. Some apps show the agent a file as soon as you upload it, so check files before uploading them.
 
 ## How the review works
 
 1. **Questions:** The agent asks for the stage, the areas to review, and the output you want. Free text is accepted.
-2. **Files and confirmation:** The agent asks only for the files those areas need. It asks you to confirm the files hold no respondent data or personal identifiers. It opens nothing until you confirm.
+2. **Files and confirmation:** The agent asks only for the files those areas need. It asks you to confirm the files hold no respondent data or personal identifiers. It reviews nothing until you confirm.
 3. **Review:** The agent reads the matching reference file, then your documents. It does not edit files. It reports only what the files support.
 4. **Report:** For each area, the agent gives a verdict and three lists of changes. It adds links and a closing note.
 5. **Your decision:** You decide what to change. The skill does not apply anything on its own.
@@ -138,7 +138,8 @@ DIME Wiki, DECDI research standards and consent templates, SurveyCTO documentati
 - `SKILL.md`: the instructions the agent follows.
 - `references/`: the criteria for each area, the intake questions, the report format, links, and sources.
 - `scripts/`: the form checker.
-- `tests/`: a form with planted errors, and the expected findings for a test TOR.
+- `tests/`: a form with planted errors (`planted-errors-form.xlsx`), a test TOR, a test DQA plan, and the expected findings for each (`expected-findings.md`).
+- `evals/`: test prompts and checks, one folder per case.
 
 ## Feedback
 
