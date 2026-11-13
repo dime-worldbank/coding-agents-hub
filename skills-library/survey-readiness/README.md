@@ -1,151 +1,46 @@
-# Survey Readiness
+# Survey skills
 
-`survey-readiness` is a reusable AI-agent skill that helps project teams check their survey preparation before fieldwork. It covers timeline, ethics and data security, sampling, hiring a survey firm, pilot plan, questionnaire design, survey programming, enumerator training and field plan, and the data quality plan.
+Reusable AI-agent skills for preparing a primary survey. Each skill stands alone. Install only what you need.
 
-The skill is a first pass. It does not approve a plan. It reads files without changing them.
+| Skill | Does | Scope | Status |
+|---|---|---|---|
+| `xlsform-paper-sync` | Reviews a form's name, label, relevant and constraint columns. Compares paper and programmed versions: flow, wording, choice lists, skip logic, constraints. Creates a form from paper (with the SurveyCTO skill) or paper from a form. Works from Markdown, no custom Python | Universal. Best practices on by default, Style Guide optional | Draft, one reading test on invented files |
+| `survey-prep-timeline` | Lists every prep step and checks none is missing. Builds a timeline backward from the data collection start, or forward from what is done | Universal | Draft, built |
+| `enum-manual` | Writes an enumerator manual from your form and your answers. Works from Markdown, no custom Python | Universal | Draft, built |
+| `enum-training-plan` | Builds a training agenda, quiz and test plan, field practice plan, and selection steps | Universal | Draft, built |
+| `tor-development-impact` | Creates a survey firm TOR from the standard template, edited in chat, or reviews a TOR | Development Impact | Draft, built |
+| `survey-skill-connector` | Routes requests to the skills above and carries a shared project brief | Universal | Draft, built |
+| `hfc-plan` | Data quality plan and high-frequency checks | Universal | Planned, on hold |
 
-**Status:** draft for feedback. Criteria and tiers are being reviewed.
+Scope labels: **universal** works for any team; **Development Impact** assumes Development Impact standards and templates; **WBG** would assume World Bank procedures (none yet).
 
-## Quick start
+## How they fit together
 
-Copy the complete `survey-readiness/` folder into your project's skills directory, or download the skill as a zip. Do not copy only `SKILL.md`, because the skill also depends on its `references/` and `scripts/` folders.
+Start with `survey-skill-connector` if you are not sure where to begin. It creates a short `project-brief.md` that the other skills read, so you are not asked the same thing twice. Suggested order: objectives and sampling, ethics, questionnaire, pilot, programmed form (`xlsform-paper-sync`), TOR (`tor-development-impact`), manual (`enum-manual`), training (`enum-training-plan`), data quality plan. `survey-prep-timeline` runs through all of it.
 
-For example:
+Ethics, sampling, the pilot plan, and questionnaire design have no skill yet. The connector gives pointers.
 
-```text
-your-project/
-└── .agents/
-    └── skills/
-        └── survey-readiness/
-```
+## Keeping token use low
 
-Then prompt the agent:
+- Descriptions are about 70 to 80 words. Each `SKILL.md` is a short router of 350 to 750 words. References load only when the task needs them, once.
+- `xlsform-paper-sync` and `enum-manual` convert files to Markdown and reduce the form to the columns that matter, so the agent never reads a whole workbook. They use no custom Python. The other skills use small Python scripts for dates, number checks, the agenda check, and the project brief. None of them reads or writes a Word or Excel file: they read text, Markdown, or JSON.
+- Documents are written to files and shown in chat as one-line summaries.
+- `python tools/check_budget.py .` counts the words each skill loads and flags any over the suggested budgets.
 
-```text
-Read .agents/skills/survey-readiness/SKILL.md and use it to check the survey
-preparation files at [PROJECT PATH].
-```
+## Every skill (tests differ)
 
-For selected files:
+- Asks, never assumes. Questions are tappable multiple choice where the app supports it, with free text always allowed.
+- Confirms that shared files hold no personal data before reading them.
+- Has its own README with a suggested workflow, its own tests (`python tests/run_tests.py` in each skill folder, except `xlsform-paper-sync` and `enum-manual`, which have shell tests (`check_pick_columns.sh`, `check_scripts.sh`))
 
-```text
-Read .agents/skills/survey-readiness/SKILL.md and review only:
+## Requirements
 
-- [PATH TO FILE 1]
-- [PATH TO FILE 2]
+`markitdown` (or `extract-text`, `pandoc`, `pdftotext`) to convert files to Markdown. Python 3 for the small scripts in the other skills. Node.js with the `docx` package, or `pandoc`, for Word output. In the Claude app, code execution and file creation must be on. `xlsform-paper-sync` also needs the SurveyCTO skill to create a form: https://github.com/surveycto/surveycto-agent-skill
 
-Treat this as a selected-areas review.
-```
+## Folders
 
-In the Claude app, upload the zip under Customize, then Skills, and turn it on. Code execution and file creation must be enabled. Check Anthropic's current documentation, as the steps change.
+`archive/survey-readiness-v1/` holds the earlier single skill. It is not part of the set. Its reference files cover ethics, sampling, pilot, questionnaire design, and the data quality plan, and are the source for the pointers in the connector. `archive/old-scripts/` holds the earlier form drafting scripts and the Python versions of the form checker, the comparison, and the manual tools, no longer used. `tools/` holds the budget checker.
 
-Before starting, move any respondent data or personal identifiers out of the folder. The agent must get your explicit confirmation before it reviews any file. Some apps show the agent a file as soon as you upload it, so check files before uploading them.
+## Not verified
 
-## How the review works
-
-1. **Questions:** The agent asks for the stage, the areas to review, and the output you want. Free text is accepted.
-2. **Files and confirmation:** The agent asks only for the files those areas need. It asks you to confirm the files hold no respondent data or personal identifiers. It reviews nothing until you confirm.
-3. **Review:** The agent reads the matching reference file, then your documents. It does not edit files. It reports only what the files support.
-4. **Report:** For each area, the agent gives a verdict and three lists of changes. It adds links and a closing note.
-5. **Your decision:** You decide what to change. The skill does not apply anything on its own.
-6. **Optional fixes:** If you ask, the agent applies clear, mechanical fixes to a copy and logs each change.
-
-## Areas covered
-
-| Area | What it checks |
-|---|---|
-| Timeline | Stage order, time to revise after the pilot, owners, buffer for delays, seasonal clashes |
-| Ethics and data security | Approvals, consent content and fit with the form, recording consent, encryption, access to personal data |
-| Sampling | Population and frame, unique IDs, seed set, code checked by a second person, power assumptions |
-| Hiring a survey firm | TOR sections, Bank-executed or recipient-executed provisions, single-source guidance, device needs |
-| Pilot plan | What the pilot tests, respondents outside the sample, final form on real devices, plan for recording changes |
-| Questionnaire design | Link to outcomes, tested questions, wording, recall, sensitive topics, interview time on shortest and longest paths |
-| Survey programming | Skip logic, unreachable questions, consent gate, encryption key, Style Guide conventions, `ietestform` results, comparison with the paper version |
-| Training and field plan | Training components, tracking, back-checks, devices that meet SurveyCTO requirements |
-| Data quality plan | Back-checks, high-frequency checks (missing core checks are listed), owners, thresholds, tools such as iehfc |
-
-## Understanding the report
-
-Each area gets one verdict:
-
-| Verdict | Meaning |
-|---|---|
-| Not ready | At least one mandatory change. |
-| Ready with fixes | No mandatory changes, but priority ones. |
-| Ready | Only suggestions, or nothing. |
-| Not assessable | Files are missing. The report says which. |
-
-Verdicts cover only the files reviewed. They are not an approval.
-
-Each area then has three lists:
-
-| List | Meaning |
-|---|---|
-| Mandatory | Fix before fieldwork starts. |
-| Priority | Likely to hurt data quality or cause rework. |
-| Suggested | Good practice worth considering. |
-
-Output options:
-
-- **Key changes** (default): Mandatory and Priority.
-- **Full review:** adds Suggested items, a short reason for each point, and sources.
-- **Format:** in chat, Word, or an Excel checklist.
-
-Every report also lists points that could not be checked, open questions for the team, links to relevant guidance, and a closing note.
-
-### Example
-
-*Illustrative only. The project is invented.*
-
-**Ethics and data security: Not ready**
-
-**Mandatory**
-- *Approvals:* Data collection is Bank-procured, but the plan gives no privacy office approval status.
-- *Approvals:* The form has an audio audit field, but consent does not mention recording (form row 18).
-- *Field:* Encryption at rest is not enabled. It cannot be added to an existing form, so upload a new one.
-
-**Priority**
-- *Approvals:* Consent says 30 minutes, but the form also collects GPS and has four modules consent does not describe.
-- *Field:* Name and phone fields are marked publishable (form rows 14 and 15).
-
-**Suggested**
-- Use a password manager and two-factor authentication for shared keys.
-
-*For guidance on any of these points, you can reach out to Impact Analytics (dimeanalytics@worldbank.org).*
-
-## Re-review
-
-Upload revised files with the earlier report. The agent lists what is fixed, what is still open, and what is new.
-
-## Limitations
-
-- It checks only the files provided.
-- It does not recompute power, approve ethics, or judge local logistics.
-- It cannot run Stata. The team runs `ietestform` and shares its CSV report.
-- The form checker reads XLSForms. Other platforms get a shorter, manual set of checks.
-- Row colour coding and module prefixes in variable names are not checked. The XLSForm template and naming document have not been provided.
-- Two rules come from the review owner and are not verified against a document: privacy office approval for Bank-procured data collection, and the USD 50,000 single-source threshold. Reports word them as guidance.
-- Some sources are dated. See `references/sources.md`.
-
-## Sources
-
-DIME Wiki, DECDI research standards and consent templates, SurveyCTO documentation, the iehfc and ietestform tools, and Impact Analytics survey review resources.
-
-`references/sources.md` lists each source with its date and status.
-
-## Folder contents
-
-- `SKILL.md`: the instructions the agent follows.
-- `references/`: the criteria for each area, the intake questions, the report format, links, and sources.
-- `scripts/`: the form checker.
-- `tests/`: a form with planted errors (`planted-errors-form.xlsx`), a test TOR, a test DQA plan, and the expected findings for each (`expected-findings.md`).
-- `evals/`: test prompts and checks, one folder per case.
-
-## Feedback
-
-Please send comments to Impact Analytics (dimeanalytics@worldbank.org). Useful feedback includes:
-
-- Items that should move between Mandatory, Priority, and Suggested.
-- Missing checks.
-- Outdated criteria.
-- Whether the report length and tone work for project teams.
+The Style Guide checks that need the XLSForm template and the variable naming document are not built. The specification-style paper reader is based on one sample layout. Wiki pages dated 2023 to 2024 may be out of date. The USD 50,000 single-source threshold and the privacy office rule in the TOR review were supplied and not checked against a document.
