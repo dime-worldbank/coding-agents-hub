@@ -22,7 +22,6 @@ Entries with a pinned commit were statically reviewed at that commit (see [Vetti
 | Econometrics | Multi | [JonasWeinert/EconAgentSkills](https://github.com/JonasWeinert/EconAgentSkills) | Opinionated agent skills for econometrics research: data, analysis, writing, and communication (DIME conventions). | — | Yes |
 | Open source | Multi | [worldbank/open-source-kit](https://github.com/worldbank/open-source-kit/tree/fa91b8503d26c6d7dfb542a2ca2286a42d31c7cf) (`wbg-oss-review`) | Official World Bank skill that audits a repository against WBG open-source publication requirements. Optional GitHub Actions compliance workflow. | `fa91b85` | Yes |
 | Reproducibility | Multi | [worldbank/wb-reproducible-research-repository](https://github.com/worldbank/wb-reproducible-research-repository/releases/tag/skill-v2026.09.25) | World Bank reproducibility skill release (`skill-v2026.09.25`) for Claude, Claude Code, and Copilot. Starts with a privacy gate and a code-only mode for confidential data. | `25c205b` | Yes |
-| Reproducibility | Multi | [dime-worldbank/rrr-package-agent](https://github.com/dime-worldbank/rrr-package-agent/tree/9bfcfa4bacc2bf3270d47da9639b216544239d4f) | ⛔ **On hold.** Reproducibility Verification Team agent for reviewing PRWP reproducibility packages. Work in progress and not yet recommended for general use. | `9bfcfa4` | Yes |
 | Slides | Multi | [dime-worldbank/ai-research-training (prepare-slides)](https://github.com/dime-worldbank/ai-research-training/tree/main/sessions/ai-skills-slides/skills/prepare-slides) | Skill for preparing research slides from the DIME AI research training materials. | — | Yes |
 | Survey design | XLSForm | [surveycto/surveycto-agent-skill](https://github.com/surveycto/surveycto-agent-skill/tree/c6b1594fac1412dafbc5908eae8c6f268708348d) | Official SurveyCTO skill for designing, checking, and converting survey forms. ⚠️ Public beta; uploads forms to SurveyCTO's hosted MCP server. | `c6b1594` | Yes |
 | Writing | Multi | [hanlulong/econ-writing-skill](https://github.com/hanlulong/econ-writing-skill/tree/f2bf7a22c5e3b37921a5e6c73bd1fb380a5e00e8) | Economics paper-writing guidance synthesized from 50+ writing guides (Cochrane, McCloskey, Shapiro, …). Prompt-only, MIT. | `f2bf7a2` | Yes |
@@ -56,12 +55,6 @@ Reviews were static: files were read, nothing was run or installed. A review cov
 **[worldbank/wb-reproducible-research-repository](https://github.com/worldbank/wb-reproducible-research-repository/releases/tag/skill-v2026.09.25)** (`skill-v2026.07.14` → `skill-v2026.09.25`): OK to list.
 - Adds a Phase 0 privacy gate and a code-only mode in which the data must be physically out of the agent's reach, plus local data-inventory scripts that record file metadata and variable names only.
 - `assets/data_inventory.do` runs `net install` of `stata-shasum` from an unpinned GitHub branch.
-
-**[dime-worldbank/rrr-package-agent](https://github.com/dime-worldbank/rrr-package-agent/tree/9bfcfa4bacc2bf3270d47da9639b216544239d4f)**: on hold.
-- The headless runner starts Claude Code in `auto` permission mode with unrestricted shell and network access while running author-submitted package code. Its command blocklist is easy to bypass.
-- In the default mode the agent opens data files and reads free-text survey fields into the model. Use private-data mode only, or an approved enterprise model, for confidential packages.
-- Good human gates exist (emails drafted not sent, no push, deletion confirmation, private-data mode), but they are agent instructions, not technical enforcement.
-- No license file; marked work in progress. Some repository hygiene issues need fixing before it is listed.
 
 **[surveycto/surveycto-agent-skill](https://github.com/surveycto/surveycto-agent-skill/tree/c6b1594fac1412dafbc5908eae8c6f268708348d)**: OK with caveats.
 - The full workflow uploads your XLSForm to SurveyCTO's hosted MCP server (`assistant-be.surveycto.net`), which needs no login and documents no retention terms. Check choice lists, labels, and preload references for sensitive details (village, school, or enumerator names) first.
